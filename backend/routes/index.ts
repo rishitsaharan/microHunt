@@ -3,6 +3,7 @@ import appUser from "./user";
 import appProduct from "./product";
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaClient } from '@prisma/client/edge'
+import { cors } from 'hono/cors'
 
 const appRouterV1 = new Hono<{
     Bindings : {
@@ -11,6 +12,7 @@ const appRouterV1 = new Hono<{
     }
 }>();
 
+appRouterV1.use('/*', cors());
 appRouterV1.route("/user/", appUser);
 appRouterV1.route("/product/", appProduct);
 

@@ -46,6 +46,7 @@ appUser.post("/signin", async (c) => {
     }).$extends(withAccelerate());
 
     const body = await c.req.json();
+    console.log(body);
     const userExists = await prisma.user.findFirst({
         where : {
             username : body.username,
