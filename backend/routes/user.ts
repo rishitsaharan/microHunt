@@ -32,7 +32,12 @@ appUser.post("/signup", async(c) => {
         const token = await sign({id : user.id}, c.env.JWT_SECRET);
         return c.json({
             message : "Signed Up",
-            token : token
+            token : token,
+            userData : {
+                id : user.id,
+                name : user.name,
+                username : user.username
+            }
         });
     }
     catch(err){
@@ -46,7 +51,6 @@ appUser.post("/signin", async (c) => {
     }).$extends(withAccelerate());
 
     const body = await c.req.json();
-    console.log(body);
     const userExists = await prisma.user.findFirst({
         where : {
             username : body.username,
@@ -59,7 +63,12 @@ appUser.post("/signin", async (c) => {
             c.status(200);
             return c.json({
                 message : "Signed In",
-                token : jwtToken
+                token : jwtToken,
+                userData : {
+                    id : userExists.id,
+                    name : userExists.name,
+                    username : userExists.username
+                }
             });
         }
         catch(err){
