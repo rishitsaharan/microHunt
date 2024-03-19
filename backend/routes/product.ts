@@ -130,7 +130,6 @@ appProduct.post("/", async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl : c.env.DATABASE_URL
     }).$extends(withAccelerate());
-
     const {success} = productInput.safeParse(body);
     if(!success){
         c.status(403);
@@ -145,9 +144,8 @@ appProduct.post("/", async (c) => {
             punchline : body.punchline,
             description : body.description,
             moreInfo : body.moreInfo,
-            logoFileUrl : body.logoFile,
+            logoFileUrl : body.logoFileUrl,
             typeOfProduct : body.typeOfProduct,
-            productCategory : body.productCategory,
             typeCommercialOffer : body.typeCommercialOffer,
             tags : body.tags,
             launchDate : body.launchDate,

@@ -26,7 +26,6 @@ export declare const signInInput: z.ZodObject<{
 export type signInInputType = z.infer<typeof signInInput>;
 export declare const voteInput: z.ZodObject<{
     productId: z.ZodNumber;
-    userId: z.ZodNumber;
     description: z.ZodString;
     roasted: z.ZodString;
     ideaRating: z.ZodNumber;
@@ -34,7 +33,6 @@ export declare const voteInput: z.ZodObject<{
     used: z.ZodBoolean;
 }, "strip", z.ZodTypeAny, {
     productId: number;
-    userId: number;
     description: string;
     roasted: string;
     ideaRating: number;
@@ -42,7 +40,6 @@ export declare const voteInput: z.ZodObject<{
     used: boolean;
 }, {
     productId: number;
-    userId: number;
     description: string;
     roasted: string;
     ideaRating: number;
@@ -51,7 +48,6 @@ export declare const voteInput: z.ZodObject<{
 }>;
 export type voteInputType = z.infer<typeof voteInput>;
 export declare const productInput: z.ZodObject<{
-    userId: z.ZodNumber;
     linkWebsite: z.ZodString;
     codeName: z.ZodString;
     punchline: z.ZodString;
@@ -59,14 +55,12 @@ export declare const productInput: z.ZodObject<{
     moreInfo: z.ZodString;
     logoFileUrl: z.ZodString;
     typeOfProduct: z.ZodString;
-    productCategory: z.ZodString;
     typeCommercialOffer: z.ZodString;
-    tags: z.ZodString;
+    tags: z.ZodArray<z.ZodString, "many">;
     launchDate: z.ZodString;
     productDevelopmentStage: z.ZodString;
     finalNotes: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    userId: number;
     description: string;
     linkWebsite: string;
     codeName: string;
@@ -74,14 +68,12 @@ export declare const productInput: z.ZodObject<{
     moreInfo: string;
     logoFileUrl: string;
     typeOfProduct: string;
-    productCategory: string;
     typeCommercialOffer: string;
-    tags: string;
+    tags: string[];
     launchDate: string;
     productDevelopmentStage: string;
     finalNotes: string;
 }, {
-    userId: number;
     description: string;
     linkWebsite: string;
     codeName: string;
@@ -89,9 +81,8 @@ export declare const productInput: z.ZodObject<{
     moreInfo: string;
     logoFileUrl: string;
     typeOfProduct: string;
-    productCategory: string;
     typeCommercialOffer: string;
-    tags: string;
+    tags: string[];
     launchDate: string;
     productDevelopmentStage: string;
     finalNotes: string;

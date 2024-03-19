@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { string } from "zod";
 
 export const signUpInput = z.object({
     username : z.string().email(),
@@ -31,9 +31,8 @@ export const productInput = z.object({
     moreInfo : z.string(),
     logoFileUrl : z.string(),
     typeOfProduct : z.string(),
-    productCategory : z.string(),
     typeCommercialOffer : z.string(),
-    tags : z.string(),
+    tags : z.array(z.string()),
     launchDate : z.string(),
     productDevelopmentStage : z.string(),
     finalNotes : z.string()

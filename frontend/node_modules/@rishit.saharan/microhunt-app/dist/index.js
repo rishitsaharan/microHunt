@@ -16,7 +16,6 @@ exports.signInInput = zod_1.default.object({
 });
 exports.voteInput = zod_1.default.object({
     productId: zod_1.default.number(),
-    userId: zod_1.default.number(),
     description: zod_1.default.string(),
     roasted: zod_1.default.string(),
     ideaRating: zod_1.default.number().min(1).max(5),
@@ -24,7 +23,6 @@ exports.voteInput = zod_1.default.object({
     used: zod_1.default.boolean()
 });
 exports.productInput = zod_1.default.object({
-    userId: zod_1.default.number(),
     linkWebsite: zod_1.default.string(),
     codeName: zod_1.default.string(),
     punchline: zod_1.default.string(),
@@ -32,9 +30,8 @@ exports.productInput = zod_1.default.object({
     moreInfo: zod_1.default.string(),
     logoFileUrl: zod_1.default.string(),
     typeOfProduct: zod_1.default.string(),
-    productCategory: zod_1.default.string(),
     typeCommercialOffer: zod_1.default.string(),
-    tags: zod_1.default.string(),
+    tags: zod_1.default.array(zod_1.default.string()),
     launchDate: zod_1.default.string(),
     productDevelopmentStage: zod_1.default.string(),
     finalNotes: zod_1.default.string()
