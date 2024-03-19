@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { productInputType } from "@rishit.saharan/microhunt-app";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { isAuthenticatedState } from "../atoms/atom";
 
 export const ProductRegister = () => {
     const navigate = useNavigate();
+    const isAuthenticated = useRecoilValue(isAuthenticatedState);
+
+    function checkIsAuthenticated() {
+        if (!isAuthenticated) {
+            alert("You'll have to login first.");
+            navigate("/signin");
+        }
+    }
+    useEffect(() => {
+        checkIsAuthenticated();
+    }, []);
+
+
     const [linkWebsite, setLinkWebsite] = useState("");
     const [codeName, setCodeName] = useState("");
     const [punchline, setPunchline] = useState("");
