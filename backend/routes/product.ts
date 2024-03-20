@@ -3,6 +3,7 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaClient } from '@prisma/client/edge'
 import { productInput, voteInput } from "@rishit.saharan/microhunt-app";
 import { sign, verify } from "hono/jwt";
+import { upgradeWebSocket } from 'hono/cloudflare-workers'
 
 const appProduct = new Hono<{
     Bindings : {
@@ -14,6 +15,7 @@ const appProduct = new Hono<{
         UserId : number
     }
 }>();
+
 
 appProduct.use("*", async (c, next) => {
     const prisma = new PrismaClient({
@@ -42,6 +44,17 @@ appProduct.use("*", async (c, next) => {
 
 //get req
 
+
+appProduct.get("/leaderboard", async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl : c.env.DATABASE_URL
+    }).$extends(withAccelerate());
+
+    const allProducts = await prisma.product.findMany();
+    allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
+    console.log(allProducts);
+    return c.json(allProducts);
+});
 
 appProduct.get("/:id", async (c) => {
     const params = c.req.param().id;
@@ -95,7 +108,6 @@ appProduct.post("/vote", async(c) => {
         c.status(403);
         return c.text("Incorrect Input Formats");
     }
-
     const feedback = await prisma.feedback.create({
         data : {
             productId : body.productId,
