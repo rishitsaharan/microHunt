@@ -27,6 +27,9 @@ model Product{
   userId Int
   feedbacks Feedback[]
   numberVotes Int @default(0)
+  ideaRating Int @default(0)
+  productRating Int @default(0)
+  roastRating Int @default(0)
   linkWebsite String
   codeName String
   punchline String

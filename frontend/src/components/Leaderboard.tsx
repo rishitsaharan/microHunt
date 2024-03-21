@@ -23,7 +23,7 @@ export const Leaderboard =  () => {
         {products.map((product, index) => {
             return (
                 <div key={product.id}>
-                    <ProductCard key={product.id} product={product} index={index}/>
+                    <ProductCard product={product} index={index}/>
                 </div>
             )
         })}
