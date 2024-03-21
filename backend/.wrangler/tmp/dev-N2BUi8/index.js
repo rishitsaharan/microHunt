@@ -12345,8 +12345,36 @@ var sign2 = jwt_exports.sign;
 
 // routes/user.ts
 var appUser = new Hono2();
-appUser.get("/", (c) => {
-  return c.json({ msg: "reached here" });
+appUser.get("/", async (c) => {
+  const prisma = new import_edge.PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL
+  }).$extends(withAccelerate());
+  const jwtToken = c.req.header("Authorization");
+  if (!jwtToken) {
+    c.status(411);
+    return c.text("No Auth Token");
+  }
+  try {
+    const token = jwtToken.split(" ")[1];
+    const payload = await verify2(token, c.env.JWT_SECRET);
+    if (!payload) {
+      c.status(411);
+      return c.text("Incorrect Auth Token");
+    }
+    const user = await prisma.user.findFirst({
+      where: {
+        id: payload.id
+      }
+    });
+    return c.json({
+      id: user?.id,
+      name: user?.name,
+      username: user?.username
+    });
+  } catch (err) {
+    c.status(411);
+    return c.json({ msg: "Error while fetching User" });
+  }
 });
 appUser.post("/signup", async (c) => {
   const prisma = new import_edge.PrismaClient({
@@ -12417,6 +12445,14 @@ init_modules_watch_stub();
 var import_edge2 = __toESM(require_edge3());
 var import_microhunt_app = __toESM(require_dist());
 var appProduct = new Hono2();
+appProduct.get("/leaderboard", async (c) => {
+  const prisma = new import_edge2.PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL
+  }).$extends(withAccelerate());
+  const allProducts = await prisma.product.findMany();
+  allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
+  return c.json(allProducts);
+});
 appProduct.use("*", async (c, next) => {
   const prisma = new import_edge2.PrismaClient({
     datasourceUrl: c.env.DATABASE_URL
@@ -12441,15 +12477,6 @@ appProduct.use("*", async (c, next) => {
   }
   await next();
 });
-appProduct.get("/leaderboard", async (c) => {
-  const prisma = new import_edge2.PrismaClient({
-    datasourceUrl: c.env.DATABASE_URL
-  }).$extends(withAccelerate());
-  const allProducts = await prisma.product.findMany();
-  allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
-  console.log(allProducts);
-  return c.json(allProducts);
-});
 appProduct.get("/:id", async (c) => {
   const params = c.req.param().id;
   if (params) {
@@ -12460,6 +12487,14 @@ appProduct.get("/:id", async (c) => {
     const product = await prisma.product.findFirst({
       where: {
         id: productId
+      },
+      include: {
+        user: true,
+        feedbacks: {
+          include: {
+            user: true
+          }
+        }
       }
     });
     return c.json(product);

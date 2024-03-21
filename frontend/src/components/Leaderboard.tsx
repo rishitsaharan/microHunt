@@ -5,7 +5,6 @@ import { ProductCard } from './ProductCard';
 
 export const Leaderboard =  () => {
     const [products, setProducts] = useState< any []>([]);
-    const [socket, setSocket] = useState<WebSocket | null>(null);
 
     async function getProducts() {
         const response = await axios.get(`${BACKEND_URL}/api/v1/product/leaderboard`, {

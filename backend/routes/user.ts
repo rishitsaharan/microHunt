@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaClient } from '@prisma/client/edge'
-import { sign } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 
 const appUser = new Hono<{
     Bindings : {
@@ -10,10 +10,39 @@ const appUser = new Hono<{
     }
 }>();
 
-appUser.get("/", (c) => {
-    return c.json({msg : "reached here"});
-})
+appUser.get("/", async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
 
+    const jwtToken = c.req.header("Authorization");
+    if(!jwtToken){
+        c.status(411);
+        return c.text("No Auth Token");
+    }
+    try{
+        const token = jwtToken.split(" ")[1];
+        const payload = await verify(token, c.env.JWT_SECRET);
+        if(!payload){
+            c.status(411);
+            return c.text("Incorrect Auth Token");
+        }
+        const user = await prisma.user.findFirst({
+            where : {
+                id : payload.id
+            }
+        });
+        return c.json({
+            id : user?.id,
+            name : user?.name,
+            username : user?.username
+        });
+    }
+    catch(err){
+        c.status(411);
+        return c.json({msg :"Error while fetching User"});
+    }
+})
 
 appUser.post("/signup", async(c) => {
     const prisma = new PrismaClient({

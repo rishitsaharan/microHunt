@@ -16,6 +16,15 @@ const appProduct = new Hono<{
     }
 }>();
 
+appProduct.get("/leaderboard", async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl : c.env.DATABASE_URL
+    }).$extends(withAccelerate());
+
+    const allProducts = await prisma.product.findMany();
+    allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
+    return c.json(allProducts);
+});
 
 appProduct.use("*", async (c, next) => {
     const prisma = new PrismaClient({
@@ -44,18 +53,6 @@ appProduct.use("*", async (c, next) => {
 
 //get req
 
-
-appProduct.get("/leaderboard", async (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl : c.env.DATABASE_URL
-    }).$extends(withAccelerate());
-
-    const allProducts = await prisma.product.findMany();
-    allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
-    console.log(allProducts);
-    return c.json(allProducts);
-});
-
 appProduct.get("/:id", async (c) => {
     const params = c.req.param().id;
     if(params){
@@ -67,6 +64,14 @@ appProduct.get("/:id", async (c) => {
         const product = await prisma.product.findFirst({
             where : {
                 id : productId
+            },
+            include :{
+                user : true,
+                feedbacks: {
+                    include : {
+                        user : true
+                    }
+                }
             }
         });
         return c.json(product);

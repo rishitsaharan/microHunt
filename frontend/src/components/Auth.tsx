@@ -2,13 +2,9 @@ import { useState } from "react";
 import { signUpInputType } from "@rishit.saharan/microhunt-app";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
-import { isAuthenticatedState, userProfileState } from "../atoms/atom";
 import axios from "axios";
-import { useRecoilState } from "recoil";
 
 export const Auth = ({type} : {type : "signup" | "signin"}) => {
-    const [isAuthenticated, setIsAuthenticated] = useRecoilState(isAuthenticatedState);
-    const [userProfile, setUserProfile] = useRecoilState(userProfileState);
     const navigate = useNavigate();
 
     const [postInputs, setPostInputs] = useState < signUpInputType > ({
@@ -21,9 +17,7 @@ export const Auth = ({type} : {type : "signup" | "signin"}) => {
         try{
             const url = `${BACKEND_URL}/api/v1/user/${type}`;
             const response = await axios.post(url, postInputs);
-            localStorage.setItem("token", response.data.token);
-            setIsAuthenticated(true);
-            setUserProfile(response.data.userData);
+            localStorage.setItem("token", response.data.token); 
             navigate("/");
         }
         catch(err){

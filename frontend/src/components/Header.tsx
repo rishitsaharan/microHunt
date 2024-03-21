@@ -1,16 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { userDisplayNameSelector } from "../atoms/selector";
-import { isAuthenticatedState, userProfileState } from "../atoms/atom";
+import { BACKEND_URL } from "../config";
 import logo from "../assets/logo.png";
+import axios from "axios";
 
 export const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useRecoilState(isAuthenticatedState);
-    const [userProfile, setUserProfile] = useRecoilState(userProfileState);
-    const userDisplayName = useRecoilValue(userDisplayNameSelector);
+    const [userProfile, setUserProfile] = useState<{
+        id : number,
+        name : string,
+        username : string
+    }>({
+        id : -1,
+        name : "",
+        username : ""
+    });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        async function getUser(){
+            const response = await axios.get(`${BACKEND_URL}/api/v1/user/`, {
+                headers: {
+                    Authorization: `Bearer ` + localStorage.getItem("token")
+                }
+            });
+            setUserProfile(response.data);
+        }    
+
+        getUser();
+    }, []);
 
     const handleLogin = () => {
         setIsOpen(!open);
@@ -18,9 +36,8 @@ export const Header = () => {
     }
     const handleLogout = () => {
         localStorage.removeItem("token");
-        setIsAuthenticated(false);
-        setUserProfile(null);
-        navigate("/");
+        localStorage.removeItem("userProfile");
+        navigate("/")
         setIsOpen(!open);
     }
 
@@ -44,18 +61,18 @@ export const Header = () => {
                 <div className="flex col-span-2">
                     <div className="flex items-center ml-20">
                         <button className="flex flex-col-1 items-center" onClick={() => setIsOpen(!isOpen)}>
-                            <ProfileDP author={userDisplayName} size="large"/>
+                            <ProfileDP author={localStorage.getItem("token") ? userProfile.name : "A"} size="large"/>
                             <div className=" font-semibold">
-                                {userDisplayName}
+                                {localStorage.getItem("token") ? userProfile.name : "Guest"}
                             </div>
                         </button>
                         {isOpen && (
                             <div className="absolute right-0 mt-24 w-48 bg-white rounded-lg shadow-xl">
                                 <button
-                                    onClick={isAuthenticated ? handleLogout : handleLogin}
+                                    onClick={localStorage.getItem("token") ? handleLogout : handleLogin}
                                     className="block px-4 py-2 w-full text-gray-800 hover:bg-gray-200"
                                 >
-                                    {isAuthenticated ? `Logout` : `Login/Signup`}
+                                    {localStorage.getItem("token") ? `Logout` : `Login/Signup`}
                                 </button>
                             </div>
                         )}

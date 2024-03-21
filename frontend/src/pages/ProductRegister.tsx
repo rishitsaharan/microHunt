@@ -3,15 +3,12 @@ import axios from "axios";
 import { BACKEND_URL } from "../config";
 import { productInputType } from "@rishit.saharan/microhunt-app";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { isAuthenticatedState } from "../atoms/atom";
 
 export const ProductRegister = () => {
     const navigate = useNavigate();
-    const isAuthenticated = useRecoilValue(isAuthenticatedState);
 
     function checkIsAuthenticated() {
-        if (!isAuthenticated) {
+        if (!localStorage.getItem("token")) {
             alert("You'll have to login first.");
             navigate("/signin");
         }
