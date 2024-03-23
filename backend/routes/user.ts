@@ -44,6 +44,39 @@ appUser.get("/", async (c) => {
     }
 })
 
+appUser.get("/:id", async(c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    const authorId = parseInt(c.req.param().id);
+    const jwtToken = c.req.header("Authorization");
+    if(!jwtToken){
+        c.status(411);
+        return c.text("No Auth Token");
+    }
+    try{
+        const token = jwtToken.split(" ")[1];
+        const payload = await verify(token, c.env.JWT_SECRET);
+        if(!payload){
+            c.status(411);
+            return c.text("Incorrect Auth Token");
+        }
+        const author = await prisma.user.findFirst({
+            where : {
+                id : authorId
+            }
+        });
+        return c.json({
+            id : author?.id,
+            name : author?.name,
+            username : author?.username
+        });
+    }
+    catch(err){
+        c.status(411);
+        return c.json({msg :"Error while fetching User"});
+    }
+})
 appUser.post("/signup", async(c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,

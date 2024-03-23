@@ -43,7 +43,7 @@ export const Header = () => {
 
     return <div>
         <div className="flex justify-between p-4 border-b border-gray-200">
-            <div className="flex flex-col-3 justify-center">
+            <div className="flex flex-col-3 justify-center hover:cursor-pointer" onClick={() => navigate("/")}>
                 <div className="max-w-10 max-h-10 mr-1">
                     <img src={logo} alt="MicroHunt"/>
                 </div>

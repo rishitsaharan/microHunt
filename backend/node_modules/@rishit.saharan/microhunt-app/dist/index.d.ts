@@ -27,24 +27,21 @@ export type signInInputType = z.infer<typeof signInInput>;
 export declare const voteInput: z.ZodObject<{
     productId: z.ZodNumber;
     description: z.ZodString;
-    roasted: z.ZodString;
+    roasted: z.ZodBoolean;
     ideaRating: z.ZodNumber;
     productRating: z.ZodNumber;
-    used: z.ZodBoolean;
 }, "strip", z.ZodTypeAny, {
     productId: number;
     description: string;
-    roasted: string;
+    roasted: boolean;
     ideaRating: number;
     productRating: number;
-    used: boolean;
 }, {
     productId: number;
     description: string;
-    roasted: string;
+    roasted: boolean;
     ideaRating: number;
     productRating: number;
-    used: boolean;
 }>;
 export type voteInputType = z.infer<typeof voteInput>;
 export declare const productInput: z.ZodObject<{

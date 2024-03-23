@@ -118,7 +118,11 @@ export const ProductRegister = () => {
                     <input value={linkWebsite} onChange={(e) => setLinkWebsite(e.target.value)} type="text" className="mb-2 max-w-72 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Link to your Product Website" required />
                     <input value={codeName} onChange={(e) => setCodeName(e.target.value)} type="text" className="mb-2 max-w-72 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Your Product's Codename" required />
                     <input value={punchline} onChange={(e) => setPunchline(e.target.value)} type="text" className="mb-2 max-w-72 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Your Product's PunchLine (<10  words)" required />
-                    <input value={description} onChange={(e) => setDescription(e.target.value)} type="text" className="mb-2 max-w-2xl h-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="A short description here (~70 words)" required />
+                    <textarea rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="A short description here ~70 words"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        ></textarea>
                 </div>
             </div>
             <div>
@@ -126,7 +130,11 @@ export const ProductRegister = () => {
                     More Informations (optional)
                 </div>
                 <div>
-                    <input value={moreInfo} onChange={(e) => setMoreInfo(e.target.value)} type="text" className="mb-2 max-w-2xl h-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="A Longer description here" />
+                <textarea rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="A longer description here"
+                            value={moreInfo}
+                            onChange={(e) => setMoreInfo(e.target.value)}
+                        ></textarea>
                 </div>
             </div>
             <div>
@@ -176,7 +184,11 @@ export const ProductRegister = () => {
                    Extra tags for your product
                 </div>
                 <div>
-                    <input value={tags} onChange={(e) => setTags(e.target.value)} type="text" className="mb-2 max-w-2xl h-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="One tag per line, maximum 10" />
+                <textarea rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="One tag per line, maximum 2"
+                            value={tags}
+                            onChange={(e) => setTags(e.target.value)}
+                        ></textarea>
                 </div>
             </div>
             <div>
@@ -207,7 +219,11 @@ export const ProductRegister = () => {
                     C. Final Notes
                 </div>
                 <div>
-                    <input value={finalNotes} onChange={(e) => setFinalNotes(e.target.value)} type="text" className="mb-2 max-w-2xl h-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Extra notes to the team, fields you're unsure about" />
+                <textarea rows={4} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Extra notes to the team, you're unsure about"
+                            value={finalNotes}
+                            onChange={(e) => setFinalNotes(e.target.value)}
+                        ></textarea>
                 </div>
             </div>
             <div>

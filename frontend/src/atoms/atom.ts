@@ -8,3 +8,8 @@ export const userProfileState = atom({
     key : "userProfileState",
     default : null
 });
+
+export const voteCountState = atom({
+    key : "voteCountState",
+    default : 0
+});

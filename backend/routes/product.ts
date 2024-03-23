@@ -3,7 +3,6 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { PrismaClient } from '@prisma/client/edge'
 import { productInput, voteInput } from "@rishit.saharan/microhunt-app";
 import { sign, verify } from "hono/jwt";
-import { upgradeWebSocket } from 'hono/cloudflare-workers'
 
 const appProduct = new Hono<{
     Bindings : {
@@ -21,9 +20,24 @@ appProduct.get("/leaderboard", async (c) => {
         datasourceUrl : c.env.DATABASE_URL
     }).$extends(withAccelerate());
 
-    const allProducts = await prisma.product.findMany();
+    const allProducts = await prisma.product.findMany({
+        include : {
+            user : true,
+            feedbacks : true
+        }
+    });
+    const topGainers = allProducts.filter((product) => {
+        const timePeriodInMilliseconds = 24 * 60 * 60 * 1000;
+        const startTime = new Date(Date.now() - timePeriodInMilliseconds);
+        const gainInVotes = product.numberVotes - product.feedbacks.filter(feedback => feedback.createdAt > startTime).length;
+        return gainInVotes >= 0;
+    })
+    topGainers.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
     allProducts.sort((a, b) => b.numberVotes - a.numberVotes > 0 ? b.numberVotes : b.numberVotes == a.numberVotes ? 0 : -1);
-    return c.json(allProducts);
+    return c.json({
+        topGainers : topGainers,
+        allTimeGainers : allProducts
+    });
 });
 
 appProduct.use("*", async (c, next) => {
@@ -52,6 +66,32 @@ appProduct.use("*", async (c, next) => {
 });
 
 //get req
+
+appProduct.get("/feedbacks/:id", async(c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl : c.env.DATABASE_URL
+    }).$extends(withAccelerate());
+
+    const params = c.req.param().id;
+    if(params){
+        const productId = parseInt(params);
+        const feedbacks = await prisma.feedback.findMany({
+            where : {
+                productId : productId
+            },
+            include : {
+                user : true
+            }
+        });
+
+        c.status(200);
+        return c.json(feedbacks);
+    }
+    else{
+        c.status(404);
+        return c.text("Product doesn't exists.")
+    }
+})
 
 appProduct.get("/:id", async (c) => {
     const params = c.req.param().id;
@@ -82,22 +122,6 @@ appProduct.get("/:id", async (c) => {
     }
 })
 
-appProduct.get("/feedbacks", async(c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl : c.env.DATABASE_URL
-    }).$extends(withAccelerate());
-
-    const body = await c.req.json();
-    const feedbacks = await prisma.feedback.findMany({
-        where : {
-            productId : body.productId
-        }
-    });
-
-    c.status(200);
-    return c.json(feedbacks);
-})
-
 //post req
 
 
@@ -113,31 +137,69 @@ appProduct.post("/vote", async(c) => {
         c.status(403);
         return c.text("Incorrect Input Formats");
     }
-    const feedback = await prisma.feedback.create({
-        data : {
-            productId : body.productId,
-            userId : UserId,
-            description : body.description,
-            roasted : body.roasted,
-            ideaRating : body.ideaRating,
-            productRating : body.productRating,
-            used : body.used
-        }
-    })
-    await prisma.product.update({
-        where : {
-            id : body.productId
-        },
-        data : {
-            numberVotes : {
-                increment : 1
+    await prisma.$transaction(async (prisma) => {
+        const feedback = await prisma.feedback.create({
+            data: {
+                productId: body.productId,
+                userId: UserId,
+                description: body.description,
+                roasted: body.roasted,
+                ideaRating: body.ideaRating,
+                productRating: body.productRating
             }
-        }
+        });
+        await prisma.product.update({
+            where: {
+                id: body.productId
+            },
+            data: {
+                numberVotes: {
+                    increment: 1
+                }
+            }
+        });
+        const allFeedbacks = await prisma.feedback.findMany({
+            where: {
+                productId: body.productId
+            }
+        });
+        const totalIdeaRating = allFeedbacks.reduce((acc, curr) => acc + curr.ideaRating, 0);
+        const averageIdeaRating = totalIdeaRating*1.0 / allFeedbacks.length;
+
+        const totalProductRating = allFeedbacks.reduce((acc, curr) => acc + curr.productRating, 0);
+        const averageProductRating = totalProductRating *1.0 / allFeedbacks.length;
+
+        const feedbacks = await prisma.feedback.findMany({
+            where : {
+                id : body.productId,
+                roasted : false
+            }
+        });
+        const roasts = await prisma.feedback.findMany({
+            where : {
+                id : body.productId,
+                roasted : true
+            }
+        });
+        console.log(roasts);
+        await prisma.product.update({
+            where: {
+                id: body.productId
+            },
+            data: {
+                ideaRating : averageIdeaRating,
+                productRating: averageProductRating,
+                numberFeedback : feedbacks.length,
+                numberRoasts : roasts.length
+            }
+        });
+
+        c.status(200);
+        c.json({
+            "feedbackId" : feedback.id
+        });
     });
-    c.status(200);
-    return c.json({
-        "feedbackId" : feedback.id
-    });
+    return c.text("");
 });
 
 

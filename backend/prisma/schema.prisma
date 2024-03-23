@@ -27,9 +27,10 @@ model Product{
   userId Int
   feedbacks Feedback[]
   numberVotes Int @default(0)
+  numberFeedback Int @default(0)
+  numberRoasts Int @default(0)
   ideaRating Int @default(0)
   productRating Int @default(0)
-  roastRating Int @default(0)
   linkWebsite String
   codeName String
   punchline String
@@ -45,6 +46,7 @@ model Product{
 }
 model Feedback{
   id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
   product Product @relation(fields: [productId], references: [id])
   productId Int
   user User @relation(fields: [userId], references: [id])
@@ -52,6 +54,5 @@ model Feedback{
   description String
   roasted Boolean @default(false)
   ideaRating Int
-  productRating Int?
-  used Boolean @default(false)
+  productRating Int
 }

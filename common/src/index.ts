@@ -16,10 +16,9 @@ export type signInInputType = z.infer<typeof signInInput>;
 export const voteInput = z.object({
     productId : z.number(),
     description : z.string(),
-    roasted : z.string(),
+    roasted : z.boolean(),
     ideaRating : z.number().min(1).max(5),
-    productRating : z.number().min(1).max(5),
-    used : z.boolean()
+    productRating : z.number().min(1).max(5)
 })
 export type voteInputType = z.infer<typeof voteInput>;
 

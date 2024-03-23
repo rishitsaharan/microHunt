@@ -17,10 +17,9 @@ exports.signInInput = zod_1.default.object({
 exports.voteInput = zod_1.default.object({
     productId: zod_1.default.number(),
     description: zod_1.default.string(),
-    roasted: zod_1.default.string(),
+    roasted: zod_1.default.boolean(),
     ideaRating: zod_1.default.number().min(1).max(5),
-    productRating: zod_1.default.number().min(1).max(5),
-    used: zod_1.default.boolean()
+    productRating: zod_1.default.number().min(1).max(5)
 });
 exports.productInput = zod_1.default.object({
     linkWebsite: zod_1.default.string(),
