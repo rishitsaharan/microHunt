@@ -44,10 +44,10 @@ export const ProductCard = ({product, index} : any) => {
     }
     return <>
         <div className="mb-3">
-            <div className="flex flex-row h-40 w-full max-w-6xl border border-gray-200 rounded-xl p-4 justify-between">
+            <div className="flex flex-row h-42 w-full max-w-5xl border border-gray-200 rounded-xl p-2 justify-between">
                 <div className="flex flex-row items-center">
                     <div className="flex flex-row items-center w-96 mr-3">
-                        <div className="w-16 flex-shrink-0 px-2 py-1 font-bold text-xl">
+                        <div className="w-10 flex-shrink-0 px-2 py-1 font-bold text-xl">
                             #{index + 1}
                         </div>
                         <div>
@@ -65,7 +65,7 @@ export const ProductCard = ({product, index} : any) => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col px-2 py-1 w-64 items-center justify-center mr-3">
+                    <div className="flex flex-col px-2 py-1 w-56 items-center justify-center mr-3">
                         <div className=" bg-orange-200 rounded-lg text-center m-2 w-fit px-2 py-1">
                             {product.typeOfProduct}
                         </div>
