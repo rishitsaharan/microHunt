@@ -2,7 +2,7 @@ import { Header } from "../components/Header";
 import { Leaderboard } from "../components/Leaderboard";
 import { TopGainerBoard } from "../components/TopGainerBoard";
 import { useState, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { BACKEND_URL } from '../config';
 import axios from 'axios';
 import { voteCountState } from '../atoms/atom';
@@ -11,7 +11,7 @@ import { HomeSkeleton } from "../components/HomeSkeleton";
 export const Home = () => {
     const [products, setProducts] = useState< any []>([]);
     const [topGainers, setTopGainers] = useState<any []>([]);
-    const [voteCount, setVoteCount] = useRecoilState(voteCountState);
+    const voteCount = useRecoilValue(voteCountState);
     const [loading, setLoading] = useState(true);
 
     async function getProducts() {

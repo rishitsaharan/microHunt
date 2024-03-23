@@ -228,11 +228,11 @@ export const ProductRegister = () => {
             </div>
             <div>
                 <div className="flex items-center mb-4">
-                    <input required checked={isChecked1} onChange={(e) => setIsChecked1(!isChecked1)}id="default-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
+                    <input required checked={isChecked1} onChange={() => setIsChecked1(!isChecked1)}id="default-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
                     <label className="ms-2 text-md font-medium text-gray-900">I'm allowed to showcase a product on behalf of this company</label>
                 </div>
                 <div className="flex items-center mb-4">
-                    <input required checked={isChecked2} onChange={(e) => setIsChecked2(!isChecked2)} id="default-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
+                    <input required checked={isChecked2} onChange={() => setIsChecked2(!isChecked2)} id="default-checkbox" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
                     <label className="ms-2 text-md font-medium text-gray-900">I agree to the terms and conditions and understand that my data will be processed for product registration purposes. I acknowledge that I can unsubscribe at any time without any obligation. For more information on how my data will be handled, I will review the privacy policy.</label>
                 </div>
             </div>

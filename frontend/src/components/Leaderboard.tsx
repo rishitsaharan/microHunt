@@ -1,9 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { BACKEND_URL } from '../config';
-import axios from 'axios';
 import { ProductCard } from './ProductCard';
-import { voteCountState } from '../atoms/atom';
 
 export const Leaderboard =  ({products} : any) => {
 
